@@ -1,0 +1,35 @@
+name: Daily YouTube Research
+
+on:
+  schedule:
+    - cron: '0 7 * * *'   # 7am UTC = 8am UK / 9am Central Europe / adjusts for your timezone
+  workflow_dispatch:        # Also allows manual "Run workflow" button on GitHub
+
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write       # Needed to commit reports back to the repo
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run research script
+        env:
+          YT_API_KEY: ${{ secrets.YT_API_KEY }}
+          OUTPUT_DIR: ./reports
+        run: python research.py
+
+      - name: Commit and push reports
+        run: |
+          git config user.name "YT Research Bot"
+          git config user.email "bot@yt-research.com"
+          git add reports/
+          git diff --staged --quiet || git commit -m "📊 Daily research reports $(date +'%Y-%m-%d')"
+          git push
