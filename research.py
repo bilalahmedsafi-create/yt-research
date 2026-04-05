@@ -244,72 +244,190 @@ def analyze_script_style(transcripts):
 # ─── REPORT GENERATOR ─────────────────────────────────────────────────────────
 
 def generate_video_ideas(channel_name, niche, outliers, title_patterns, hook_types):
-    """Generate targeted video ideas based on what's performing."""
-    ideas = []
+    """Generate channel-specific video ideas tailored to each channel's style and niche."""
 
-    top_patterns = list(title_patterns.keys())[:3]
-    top_hook = hook_types.most_common(1)[0][0] if hook_types else "Curiosity/Shock Hook"
+    # ── SpideyParker: MCU / Celebrity — dramatic, actor-driven, behind-the-scenes ──
+    if channel_name == "SpideyParker":
+        return [
+            {
+                "title": "The Real Reason [Top Actor] Almost Quit Marvel — And Nobody Talks About It",
+                "why": "Hidden/real-reason format is the #1 outlier driver in MCU niche. Your audience wants insider truth, not press-release stories. Pairs perfectly with your celebrity angle.",
+                "thumbnail": "Actor face extreme close-up, shocked or uncomfortable expression. Bold red 'REAL REASON' text, dark vignette bg. High contrast — no clutter.",
+                "hook": "The official story is that [Actor] loved the role. But behind the scenes, there were three moments where they almost walked away for good.",
+                "format": "Long-form, 9–13 min, investigative narrative. Build with timeline, quotes, and verified on-set reports."
+            },
+            {
+                "title": "[Actor]'s On-Set Behavior Was So Bad Marvel Quietly Fired Them",
+                "why": "Celebrity controversy within Marvel hits all your audience's triggers: MCU fandom + gossip. 'Quietly' creates intrigue. High comment volume = algorithm boost.",
+                "thumbnail": "Actor mid-scene, 'FIRED' stamped across image in red, clapperboard + Marvel logo in corner. Dark moody tone.",
+                "hook": "Marvel has fired two people quietly in the last four years. One of them has never been reported — until now.",
+                "format": "Medium-long, 8–11 min. Use 'leaked', 'sources say' framing. End on a cliffhanger theory."
+            },
+            {
+                "title": "The Scene Marvel Shot But Will Never Release — And Why",
+                "why": "Deleted/hidden content is evergreen search traffic. 'Will never release' raises the stakes beyond a normal deleted scene video.",
+                "thumbnail": "Blurred/censored movie still, bold red CLASSIFIED stamp, Marvel logo ghosted in background.",
+                "hook": "This scene exists. It was fully filmed, fully edited, and then buried — and the reason they won't release it is uncomfortable.",
+                "format": "Long-form, 10–14 min. Narrative structure: set up the scene → what it revealed → why it was cut."
+            },
+            {
+                "title": "What [Movie] Was Actually About (And Marvel Hoped You Wouldn't Notice)",
+                "why": "Subtext/meaning deep dives get massive watch time — audiences feel smart finishing them. 'Marvel hoped you wouldn't notice' adds a conspiratorial edge.",
+                "thumbnail": "Movie poster with 'HIDDEN MEANING' text overlay, magnifying glass icon, muted but bold palette.",
+                "hook": "On the surface this is a superhero movie. But every major scene is about something else entirely — and once you see it, you can't unsee it.",
+                "format": "Long-form essay, 11–16 min. Analysis format: scene breakdown → real-world theme → why it was made this way."
+            },
+            {
+                "title": "[Celebrity]'s Public Image vs. What Co-Stars Actually Say",
+                "why": "The contrast format (public vs. private) creates tension that keeps viewers watching. Co-star quotes are more credible than rumor — keeps it safe and still viral.",
+                "thumbnail": "Split image: polished PR photo left, candid or on-set photo right. 'VS.' in bold center. Contrasting warm/cold color grading.",
+                "hook": "Everything you think you know about [Celebrity] comes from their publicist. Here's what people who actually worked with them say.",
+                "format": "Medium, 8–12 min. Present quotes, interviews, behind-the-scenes accounts chronologically."
+            },
+            {
+                "title": "[Number] Marvel Decisions That Were Supposed to Be Different — And Why They Changed",
+                "why": "Production change videos get shared by hardcore fans AND casual viewers. List format = easy watch time. 'Why they changed' adds depth beyond a standard list.",
+                "thumbnail": "Collage of character/movie stills with X-marks on rejected versions, bold number in corner.",
+                "hook": "The Marvel we got was plan B. In every single phase, the original plan would have changed everything.",
+                "format": "Long-form list, 10–15 min. Each item: original plan → what changed → how it affected the story."
+            },
+            {
+                "title": "The Dark Side of [Fan-Favourite Character] Marvel Doesn't Want You To Think About",
+                "why": "Reframing beloved characters is one of the highest-CTR formats in fan content. Forces viewers to engage emotionally — they'll either agree or argue in comments.",
+                "thumbnail": "Fan-favourite character in shadow, half-lit dramatic lighting, 'DARK SIDE' in bold. Emotional, not gimmicky.",
+                "hook": "We love [Character]. But if you look at what they actually do — not what they say — the picture gets uncomfortable fast.",
+                "format": "Essay/argument style, 9–13 min. Structure: establish the love → introduce the evidence → reframe → final take."
+            },
+            {
+                "title": "Why [MCU Movie] Failed — And What Nobody Wants To Admit",
+                "why": "Critical takes on underperforming MCU entries drive enormous discussion. 'Nobody wants to admit' positions you as brave and honest, not just another critic.",
+                "thumbnail": "Movie logo/poster with cracked glass effect, downward arrow graphic, serious tone — not mocking.",
+                "hook": "The reviews said it was fine. The box office disagreed. And the real reason it failed is something Marvel themselves have never acknowledged.",
+                "format": "Long-form opinion/analysis, 10–14 min. Structure: surface-level explanations → dig deeper → the uncomfortable truth."
+            },
+        ]
 
-    templates = [
-        {
-            "title": f"The Real Reason [Top Actor] Almost Quit Marvel",
-            "why": "Hidden/real-reason format consistently outperforms in MCU niche. Audience craves behind-the-scenes truth.",
-            "thumbnail": "Actor's face close-up with shocked expression, red text overlay 'REAL REASON', dark dramatic bg",
-            "hook": "Everyone thinks they know why [Actor] left — but the actual story is completely different.",
-            "format": "Long-form, 8–12 min, narrative-driven"
-        },
-        {
-            "title": f"[Number] Things [Show/Movie] Did That Nobody Noticed",
-            "why": "List format is proven in your niche. 'Nobody noticed' creates FOMO and rewatch motivation.",
-            "thumbnail": "Split collage of 3–4 movie stills, bold yellow number, magnifying glass graphic",
-            "hook": "You've watched this [X] times — but directors hid something in every single scene.",
-            "format": "Medium, 6–9 min, rapid-fire list style"
-        },
-        {
-            "title": f"What [Character] Was ACTUALLY Supposed To Look Like",
-            "why": "Concept art / original vision videos get massive CTR — audience loves 'what could have been'.",
-            "thumbnail": "Side-by-side: final vs concept art, question mark, bold contrasting colors",
-            "hook": "Before CGI, before casting, there was a completely different vision — and it changes everything.",
-            "format": "Medium, 5–8 min, image-heavy, comparison structure"
-        },
-        {
-            "title": f"The Scene That Accidentally Predicted [Major Plot Twist]",
-            "why": "Pattern/Easter egg videos drive comments + shares. Viewers debate in comments = algorithm boost.",
-            "thumbnail": "Movie still with circle callout and arrow, 'PREDICTED' in bold red",
-            "hook": "Nobody caught this when it aired — but rewatching it now, it's obvious they knew the whole time.",
-            "format": "Short-medium, 5–7 min, mystery-reveal structure"
-        },
-        {
-            "title": f"Why [Villain] Was Actually The Hero All Along",
-            "why": "Contrarian takes get 3x comments. This format works in every outlier channel in your niche.",
-            "thumbnail": "Villain in heroic pose, split face half-villain/half-hero, bold 'ACTUALLY HERO' text",
-            "hook": "We've been rooting for the wrong character this whole time — and here's the proof.",
-            "format": "Long-form, 9–14 min, essay/argument style"
-        },
-        {
-            "title": f"[Actor]'s Method Was So Dark The Director Had To Step In",
-            "why": "Behind-the-scenes drama = guaranteed shares. Combines celebrity + controversy hooks.",
-            "thumbnail": "On-set candid style image, clapperboard graphic, tension lighting",
-            "hook": "Most actors stay in character. [Actor] went so far that production had to physically stop filming.",
-            "format": "Medium, 7–10 min, investigative narrative"
-        },
-        {
-            "title": f"They Deleted This Scene Because It Was Too Honest",
-            "why": "Deleted scene format drives YouTube search traffic year-round. 'Too honest/dark/controversial' amplifies it.",
-            "thumbnail": "Blurred/redacted scene still, red DELETED stamp, actor in background",
-            "hook": "This scene was filmed, edited, and ready to go — then pulled at the last second. Here's why.",
-            "format": "Medium, 6–9 min, reveal structure"
-        },
-        {
-            "title": f"The Hidden Connection Between [Movie A] and [Movie B] That Changes Everything",
-            "why": "Theory/connection videos create huge comment threads + are shared by fans of both properties.",
-            "thumbnail": "Two movie logos/characters connected by dotted line, explosive graphic in center",
-            "hook": "These two stories seem completely separate — until you notice one detail that was always there.",
-            "format": "Medium-long, 8–12 min, theory structure"
-        },
-    ]
+    # ── NerdDrop: Pop Culture / Nerdy Facts — fun, punchy, list-driven ──
+    elif channel_name == "NerdDrop":
+        return [
+            {
+                "title": "[Number] Nerdy Facts About [Show/Movie] That Will Ruin It For You",
+                "why": "'Ruin it for you' is a top-performing hook in pop culture fact lists — it's playfully threatening. Combines your nerdy-facts DNA with a curiosity punch.",
+                "thumbnail": "Show/movie still with magnifying glass, bold number, yellow/red text. Fun energy — not scary, just cheeky.",
+                "hook": "You love [Show]. You've watched it twice. These facts are going to make that third watch very different.",
+                "format": "Long-form list, 8–12 min. Rapid-fire but with 2–3 sentences of context per fact — not just trivia dumps."
+            },
+            {
+                "title": "The Nerdiest [Fandom] Facts Nobody Bothers To Explain",
+                "why": "The 'nobody bothers to explain' angle targets your core audience: people who are curious but feel under-served by surface-level content. High rewatch + share rate.",
+                "thumbnail": "Character or prop from the fandom, 'NERD FACTS' text in your channel's tone, clean background.",
+                "hook": "Most [Fandom] content tells you what happened. This video tells you why it happened — and the answers are way weirder than you'd expect.",
+                "format": "Medium-long, 7–11 min. Mix well-known facts with obscure ones to reward both new and hardcore fans."
+            },
+            {
+                "title": "We Ranked Every [Franchise] Movie/Season From Worst To Best — Here's The Science",
+                "why": "'The Science' elevates a standard ranking video. Ranking content is inherently shareable — people send it to disagree. Comments go crazy.",
+                "thumbnail": "Ranked list graphic, movie posters stacked 1-to-last, bold number rankings. Clean, confident layout.",
+                "hook": "Everyone's got an opinion. But we actually looked at the data — box office, reviews, rewatchability, cultural impact — and made the definitive list.",
+                "format": "Long-form, 10–15 min. Work bottom-to-top for suspense. Defend controversial placements with specific reasoning."
+            },
+            {
+                "title": "[Number] Things [Beloved Franchise] Quietly Borrowed From [Unexpected Source]",
+                "why": "The hidden-influence format is deeply satisfying to nerdy audiences. Makes viewers feel like insiders. High comment engagement: 'wait, really?!'",
+                "thumbnail": "Two franchise logos side-by-side with arrow/connection line, '?' graphic, curious tone.",
+                "hook": "You've seen [Franchise] a hundred times. But did you notice it's essentially a remix of [Unexpected Source]? The creators never hid it — you just had to know where to look.",
+                "format": "Medium, 7–10 min. Side-by-side comparisons, visual evidence. Fun detective energy, not accusatory."
+            },
+            {
+                "title": "The Pop Culture Moments That Defined [Year] — And Why They Still Matter",
+                "why": "Nostalgia + 'why it matters' framing reaches both people who lived through it and younger audiences discovering it. Great for algorithm-boosting watch time.",
+                "thumbnail": "Collage of 4–6 iconic moments from the year, bold year number, warm nostalgic color grade.",
+                "hook": "If you were online in [Year], these moments hit different. Looking back now, they were actually predicting where pop culture was going.",
+                "format": "Long-form, 10–14 min. Structure each moment with: what happened → why it blew up → what it actually meant."
+            },
+            {
+                "title": "Why [Underrated Show/Movie] Is Actually a Masterpiece Nobody Watched",
+                "why": "Underdog content performs extremely well in the NerdDrop niche — you're speaking for viewers who feel overlooked. Discovery + validation is a powerful combination.",
+                "thumbnail": "Show/movie poster with 'MASTERPIECE' text, sad/overlooked visual treatment, contrasting with bold confident type.",
+                "hook": "This [show/movie] had [X] viewers. The most-watched episode of [Popular Show] had [10x more]. That's the biggest injustice in pop culture history.",
+                "format": "Essay, 8–12 min. Make the case passionately. Specific scenes, specific reasons — not vague praise."
+            },
+            {
+                "title": "[Number] Plot Holes That Are Actually Hidden Details Hiding In Plain Sight",
+                "why": "Plot hole content is one of the highest-volume YouTube search categories. Flipping it — 'it's not a hole, it's a detail' — instantly makes your video more satisfying than the competition.",
+                "thumbnail": "Character looking confused + magnifying glass, 'NOT A PLOT HOLE' text, playful energy.",
+                "hook": "The internet thinks [X] is a mistake. It's not. You just missed the detail they put there to explain it.",
+                "format": "Long-form, 9–13 min. List format. For each 'hole': state the complaint → reveal the hidden explanation → show the evidence."
+            },
+            {
+                "title": "The Most Dangerous Fan Theory About [Franchise] — And Why It's Probably True",
+                "why": "'Dangerous' + 'probably true' is a high-intrigue combo. Theory content drives massive comment debates which feed the algorithm. NerdDrop viewers love intellectual rabbit holes.",
+                "thumbnail": "Character with red string conspiracy board behind them, 'THEORY' in bold red, dramatic but fun.",
+                "hook": "This theory started on a forum three years ago. Since then, every piece of new content has quietly confirmed it — and the creators have never denied it.",
+                "format": "Medium-long, 8–12 min. Present the theory → build the evidence chronologically → end on an open question."
+            },
+        ]
 
-    return templates
+    # ── Nerd Drop Explains: Explainer / Deep Dives — thorough, analytical, educational ──
+    else:  # Nerd Drop Explains
+        return [
+            {
+                "title": "The Complete [Character] Story — Every Detail You Need To Understand Them",
+                "why": "Full-character explainers are the backbone of the explainer niche. People search for these before watching a new season or after getting confused. Evergreen traffic.",
+                "thumbnail": "Character in iconic pose, 'EXPLAINED' text, timeline graphic behind them. Authoritative, not clickbaity.",
+                "hook": "You've seen [Character] in [X] projects. But their actual story — origins, motivations, every arc — is more complex than any single video has covered. Let's fix that.",
+                "format": "Long-form, 14–20 min. Chronological structure: origins → turning point → current arc → what's next. Cover comics/source material too."
+            },
+            {
+                "title": "Why [Plot Point Everyone Was Confused By] Actually Makes Perfect Sense",
+                "why": "Confusion-resolution videos have massive search volume. Your audience already has the question — you're giving them the answer they couldn't find. High completion rates.",
+                "thumbnail": "Confused-face emoji or character, '?' → '!' transformation graphic, clean explainer style.",
+                "hook": "When [Plot Point] happened, half the audience checked out. The other half went to Reddit. Neither found a satisfying answer — but it's actually right there in the text.",
+                "format": "Medium-long, 10–15 min. Start by validating the confusion, then build the explanation layer by layer."
+            },
+            {
+                "title": "The Real-World [Concept] Behind [Famous Franchise] — Explained",
+                "why": "Bridging pop culture to real-world concepts (science, history, psychology) doubles your audience: fans of the franchise AND people interested in the concept. Great for shares.",
+                "thumbnail": "Franchise imagery blended with real-world photo (e.g., actual science lab). 'REAL SCIENCE/HISTORY' text overlay.",
+                "hook": "The writers of [Franchise] didn't make this up. They took a real [concept] and wrapped a story around it — and the real version is even more fascinating.",
+                "format": "Long-form, 12–18 min. Structure: what the show shows → what's real → how accurately it's depicted → why that matters."
+            },
+            {
+                "title": "[Franchise] Timeline Explained — In The Correct Order",
+                "why": "Timeline explainers have permanent search value, especially for franchises with complicated chronology. People return to these repeatedly. One of the most-shared formats.",
+                "thumbnail": "Timeline graphic with key moments, franchise logo, 'FULL TIMELINE' text. Clean, organized visual.",
+                "hook": "Watching [Franchise] in release order gives you one experience. Watching it in chronological order gives you a completely different story — and honestly, a better one.",
+                "format": "Very long-form, 18–25 min. Structured by time period, not release date. Include context for why each period matters."
+            },
+            {
+                "title": "The Philosophy of [Character] — What They Actually Believe And Why It Matters",
+                "why": "Philosophy/ideology breakdowns perform exceptionally well with your deep-dive audience. Elevates you above recap channels. Drives long comment discussions.",
+                "thumbnail": "Character thoughtful/serious expression, philosophical quote overlay, dark cinematic tone. Intellectual energy.",
+                "hook": "[Character] isn't just a [hero/villain]. They have a coherent worldview — one that's internally consistent, backed by their history, and genuinely worth understanding.",
+                "format": "Essay/analysis, 12–18 min. Extract their core beliefs from actions, not just dialogue. Compare to real philosophical frameworks."
+            },
+            {
+                "title": "Every Foreshadow In [Movie/Show] — All [X] Of Them, Explained",
+                "why": "Comprehensive foreshadow breakdowns are deeply satisfying and highly shareable. Positioned as 'all of them' makes it the definitive resource — hard for other creators to compete with.",
+                "thumbnail": "Key foreshadow scene with circle callout, 'ALL [X] FORESHADOWS' text, rewatch-bait energy.",
+                "hook": "The writers hid the ending in the very first episode. Then they did it again. And again. This video finds every single one — and explains exactly what it was telling you.",
+                "format": "Long-form, 14–22 min. Go in chronological order. For each foreshadow: show the moment → show the payoff → explain the craft decision."
+            },
+            {
+                "title": "The [Villain]'s Plan Explained — It Was Actually Brilliant",
+                "why": "Villain-logic breakdowns generate massive engagement because viewers love defending or attacking villain plans. 'Actually brilliant' is a contrarian hook that earns clicks.",
+                "thumbnail": "Villain mid-monologue or scheming, 'GENIUS PLAN' text, chess piece or strategy graphic overlay.",
+                "hook": "Everyone says [Villain]'s plan had plot holes. They're wrong. Break it down step by step and it's one of the most internally consistent schemes in [franchise] history.",
+                "format": "Analysis, 10–15 min. Walk through the plan phase by phase. Address every common criticism with specific textual evidence."
+            },
+            {
+                "title": "What [Franchise] Gets Right (And Wrong) About [Real Topic] — Expert Breakdown",
+                "why": "'Gets right and wrong' framing is balanced and intellectually honest, which your audience respects. Positions you as an authority. Can collaborate with actual experts for credibility.",
+                "thumbnail": "Franchise + real-world split visual, tick/cross graphic, 'FACT vs FICTION' or 'EXPERT BREAKDOWN' text.",
+                "hook": "We asked [or: We looked at what] actual [experts/historians/scientists] think about how [Franchise] portrays [Topic]. The results are more interesting than you'd expect.",
+                "format": "Long-form, 13–18 min. Structure: introduce claim → check it against reality → explain the gap → why the writers made that choice."
+            },
+        ]
 
 def build_html_report(channel, videos_by_competitor, outliers_by_competitor, title_patterns,
                        hook_types, script_styles, thumbnail_data, ideas, today):
@@ -323,7 +441,7 @@ def build_html_report(channel, videos_by_competitor, outliers_by_competitor, tit
     # Build outlier cards HTML
     outlier_cards = ""
     for comp_name, outliers in outliers_by_competitor.items():
-        for v in outliers[:3]:
+        for v in outliers[:10]:
             views = v["views"]
             vph = v["vph"]
             mult = v["multiplier"]
@@ -595,7 +713,7 @@ def process_channel(channel):
         subs = int(stats.get("subscriberCount", 0))
         print(f"     {subs:,} subscribers")
 
-        videos = get_recent_videos(channel_id, max_results=25)
+        videos = get_recent_videos(channel_id, max_results=50)
         print(f"     {len(videos)} videos fetched")
 
         enriched = []
@@ -613,6 +731,10 @@ def process_channel(channel):
             duration_min = parse_duration(content.get("duration", ""))
 
             if not published_at or views == 0:
+                continue
+
+            # Long-form only: skip Shorts and mini-videos (< 5 minutes)
+            if duration_min < 5:
                 continue
 
             vph = calc_vph(views, published_at)
@@ -636,7 +758,7 @@ def process_channel(channel):
                     v["multiplier"] = mult
                     outliers.append(v)
                     # Fetch transcript for top outliers
-                    if len(transcripts) < 10:
+                    if len(transcripts) < 20:
                         print(f"     Fetching transcript: {v['title'][:50]}...")
                         transcripts[v["video_id"]] = get_transcript(v["video_id"])
 
