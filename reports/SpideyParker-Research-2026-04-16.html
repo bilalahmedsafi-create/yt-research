@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SpideyParker Research — 2026-04-16</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0f0f0f; color: #f1f1f1; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+
+  .header { background: linear-gradient(135deg, #1a1a1a, #0f0f0f); border-bottom: 2px solid #ff0000; padding: 28px 40px; display:flex; justify-content:space-between; align-items:center; }
+  .header-left h1 { font-size: 2rem; color: #fff; }
+  .header-left .niche { color: #aaa; margin-top: 4px; }
+  .header-right { text-align:right; }
+  .date-badge { background: #ff0000; padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }
+  .subs-badge { color: #aaa; margin-top: 6px; font-size: 0.9rem; }
+
+  .stats-bar { display:flex; gap:0; border-bottom: 1px solid #222; }
+  .stat-box { flex:1; padding: 20px 28px; border-right: 1px solid #222; }
+  .stat-box:last-child { border-right: none; }
+  .stat-num { font-size: 2rem; font-weight: 700; color: #ff0000; }
+  .stat-label { color: #888; font-size: 0.8rem; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+  .section { padding: 36px 40px; border-bottom: 1px solid #1a1a1a; }
+  .section-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 20px; display:flex; align-items:center; gap:10px; }
+  .section-title::after { content:''; flex:1; height:1px; background:#222; }
+
+  /* Outlier cards */
+  .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+  .card { background: #1a1a1a; border-radius: 10px; overflow:hidden; border: 1px solid #222; transition: border-color 0.2s; }
+  .card:hover { border-color: #ff0000; }
+  .thumb-wrap { position:relative; aspect-ratio:16/9; overflow:hidden; background:#111; }
+  .thumb-wrap img { width:100%; height:100%; object-fit:cover; }
+  .mult-badge { position:absolute; top:8px; left:8px; padding:3px 10px; border-radius:4px; font-weight:800; font-size:0.85rem; color:#000; }
+  .dur-badge { position:absolute; bottom:8px; right:8px; background:rgba(0,0,0,0.85); padding:2px 8px; border-radius:3px; font-size:0.8rem; }
+  .card-body { padding: 12px; }
+  .channel-tag { font-size:0.72rem; color:#ff0000; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:6px; }
+  .card-title { font-size:0.9rem; line-height:1.4; margin-bottom:10px; }
+  .card-stats { display:flex; gap:12px; font-size:0.8rem; color:#888; }
+
+  /* Competitors */
+  .comp-table { display:flex; flex-direction:column; gap:8px; }
+  .comp-row { display:grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap:12px; padding:12px 16px; background:#1a1a1a; border-radius:8px; align-items:center; }
+  .comp-name { font-weight:600; }
+  .comp-stat { color:#888; font-size:0.85rem; }
+  .outlier-count { color:#ff8800 !important; font-weight:600; }
+
+  /* Patterns */
+  .patterns-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:14px; }
+  .pattern-card { background:#1a1a1a; border-radius:8px; padding:16px; border-left:3px solid #ff0000; }
+  .pattern-name { font-weight:700; margin-bottom:10px; display:flex; justify-content:space-between; }
+  .pattern-count { color:#ff0000; font-size:0.85rem; }
+  .pattern-examples { padding-left:18px; color:#aaa; font-size:0.82rem; line-height:1.7; }
+
+  /* Thumbnails */
+  .thumb-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap:10px; }
+  .thumb-item { background:#1a1a1a; border-radius:6px; overflow:hidden; }
+  .thumb-item img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .thumb-caption { padding:6px 8px; font-size:0.72rem; color:#888; }
+
+  /* Hooks */
+  .hook-row { display:grid; grid-template-columns: 220px 1fr 50px; gap:12px; align-items:center; margin-bottom:10px; }
+  .hook-label { font-size:0.85rem; }
+  .hook-bar-wrap { background:#222; border-radius:4px; height:8px; }
+  .hook-bar { background: linear-gradient(90deg, #ff0000, #ff6600); border-radius:4px; height:8px; }
+  .hook-pct { color:#888; font-size:0.8rem; text-align:right; }
+
+  /* Ideas */
+  .idea-card { background:#1a1a1a; border-radius:10px; padding:22px; margin-bottom:14px; border: 1px solid #222; }
+  .idea-num { color:#ff0000; font-weight:800; font-size:0.8rem; letter-spacing:0.1em; margin-bottom:8px; }
+  .idea-title { font-size:1.1rem; font-weight:700; margin-bottom:16px; line-height:1.4; }
+  .idea-grid { display:grid; grid-template-columns: 1fr 1fr; gap:14px; }
+  .idea-section { background:#111; border-radius:6px; padding:12px; }
+  .idea-label { font-size:0.75rem; color:#888; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:6px; }
+  .idea-text { font-size:0.85rem; line-height:1.6; color:#ccc; }
+  .idea-hook { color:#ff8800; font-style:italic; }
+
+  .footer { padding:24px 40px; text-align:center; color:#444; font-size:0.8rem; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1>📊 SpideyParker</h1>
+    <div class="niche">MCU / Celebrity Pop Culture</div>
+  </div>
+  <div class="header-right">
+    <div class="date-badge">📅 2026-04-16</div>
+    <div class="subs-badge">86K subscribers</div>
+  </div>
+</div>
+
+<div class="stats-bar">
+  <div class="stat-box"><div class="stat-num">6</div><div class="stat-label">Competitors Tracked</div></div>
+  <div class="stat-box"><div class="stat-num">174</div><div class="stat-label">Videos Analyzed</div></div>
+  <div class="stat-box"><div class="stat-num">12</div><div class="stat-label">Outliers Detected (3x+)</div></div>
+  <div class="stat-box"><div class="stat-num">8</div><div class="stat-label">Title Patterns Found</div></div>
+  <div class="stat-box"><div class="stat-num">8</div><div class="stat-label">Video Ideas Generated</div></div>
+</div>
+
+<div class="section">
+  <div class="section-title">🔥 Competitor Outlier Videos</div>
+  <div class="cards-grid">
+            <div class="card outlier-card">
+              <a href="https://youtube.com/watch?v=74SayT_TGmg" target="_blank">
+                <div class="thumb-wrap">
+                  <img src="https://i.ytimg.com/vi/74SayT_TGmg/maxresdefault.jpg" alt="AVENGERS DOOMSDAY NEW SYNOPSIS! X-MEN DIE?! DARKEST MARVEL MOVIE EVER?! " onerror="this.style.display='none'">
+                  <span class="mult-badge" style="background:#ff8800">8.5x</span>
+                  <span class="dur-badge">11:45</span>
+                </div>
+              </a>
+              <div class="card-body">
+                <div class="channel-tag">The Cosmic Wonder</div>
+                <div class="card-title">AVENGERS DOOMSDAY NEW SYNOPSIS! X-MEN DIE?! DARKEST MARVEL MOVIE EVER?! </div>
+                <div class="card-stats">
+                  <span>👁 29,587</span>
+                  <span>⚡ 1637.68 VPH</span>
+                  <span style="color:#ff8800">🔥 8.5x avg</span>
+                </div>
+              </div>
+            </div>
+            <div class="card outlier-card">
+              <a href="https://youtube.com/watch?v=CPpyGlOasqg" target="_blank">
+                <div class="thumb-wrap">
+                  <img src="https://i.ytimg.com/vi/CPpyGlOasqg/maxresdefault.jpg" alt="AVENGERS DOOMSDAY TEST SCREENING REACTIONS! They are..." onerror="this.style.display='none'">
+                  <span class="mult-badge" style="background:#ff8800">5.1x</span>
+                  <span class="dur-badge">9:58</span>
+                </div>
+              </a>
+              <div class="card-body">
+                <div class="channel-tag">The Cosmic Wonder</div>
+                <div class="card-title">AVENGERS DOOMSDAY TEST SCREENING REACTIONS! They are...</div>
+                <div class="card-stats">
+                  <span>👁 65,648</span>
+                  <span>⚡ 975.99 VPH</span>
+                  <span style="color:#ff8800">🔥 5.1x avg</span>
+                </div>
+              </div>
+            </div>
+            <div class="card outlier-card">
+              <a href="https://youtube.com/watch?v=4kdKFFWJzz0" target="_blank">
+                <div class="thumb-wrap">
+                  <img src="https://i.ytimg.com/vi/4kdKFFWJzz0/maxresdefault.jpg" alt="SPIDER-MAN BRAND NEW DAY CINEMACON FOOTAGE BREAKDOWN & NEW LEAK!" onerror="this.style.display='none'">
+                  <span class="mult-badge" style="background:#ffcc00">3.9x</span>
+                  <span class="dur-badge">10:35</span>
+                </div>
+              </a>
+              <div class="card-body">
+                <div class="channel-tag">The Cosmic Wonder</div>
+                <div class="card-title">SPIDER-MAN BRAND NEW DAY CINEMACON FOOTAGE BREAKDOWN & NEW LEAK!</div>
+                <div class="card-stats">
+                  <span>👁 31,132</span>
+                  <span>⚡ 755.12 VPH</span>
+                  <span style="color:#ffcc00">🔥 3.9x avg</span>
+                </div>
+              </div>
+            </div>
+            <div class="card outlier-card">
+              <a href="https://youtube.com/watch?v=7nrHSQmr0xM" target="_blank">
+                <div class="thumb-wrap">
+                  <img src="https://i.ytimg.com/vi/7nrHSQmr0xM/maxresdefault.jpg" alt="Avengers Doomsday Cinemacon, Spider-Man Brand New Day Daredevil Hints & More!" onerror="this.style.display='none'">
+                  <span class="mult-badge" style="background:#ffcc00">3.7x</span>
+                  <span class="dur-badge">76:33</span>
+                </div>
+              </a>
+              <div class="card-body">
+                <div class="channel-tag">The Cosmic Wonder</div>
+                <div class="card-title">Avengers Doomsday Cinemacon, Spider-Man Brand New Day Daredevil Hints & More!</div>
+                <div class="card-stats">
+                  <span>👁 7,514</span>
+                  <span>⚡ 709.19 VPH</span>
+                  <span style="color:#ffcc00">🔥 3.7x avg</span>
+                </div>
+              </div>
+            </div>
+            <div class="card outlier-card">
+              <a href="https://youtube.com/watch?v=2Ha8ejTOX3U" target="_blank">
+                <div class="thumb-wrap">
+                  <img src="https://i.ytimg.com/vi/2Ha8ejTOX3U/maxresdefault.jpg" alt="I Watched Spider-Man: Brand New Day Trailer in 0.25x Speed and Here's What I Found" onerror="this.style.display='none'">
+                  <span class="mult-badge" style="background:#ff4444">18.2x</span>
+                  <span class="dur-badge">32:30</span>
+                </div>
+              </a>
+              <div class="card-body">
+                <div class="channel-tag">The Canadian Lad</div>
+                <div class="card-title">I Watched Spider-Man: Brand New Day Trailer in 0.25x Speed and Here's What I Found</div>
+                <div class="card-stats">
+                  <span>👁 1,119,581</span>
+                  <span>⚡ 2077.86 VPH</span>
+                  <span style="color:#ff4444">🔥 18.2x avg</span>
+                </div>
+              </div>
+            </div>
+            <div class="card outlier-card">
+              <a href="https://youtube.com/watch?v=-efjdj4oICs" target="_blank">
+                <div class="thumb-wrap">
+                  <img src="https://i.ytimg.com/vi/-efjdj4oICs/maxresdefault.jpg" alt="I Watched Back to the Future in 0.25x Speed and Here's What I Found" onerror="this.style.display='none'">
+                  <span class="mult-badge" style="background:#ffcc00">3.2x</span>
+                  <span class="dur-badge">16:44</span>
+                </div>
+              </a>
+              <div class="card-body">
+                <div class="channel-tag">The Canadian Lad</div>
+                <div class="card-title">I Watched Back to the Future in 0.25x Speed and Here's What I Found</div>
+                <div class="card-stats">
+                  <span>👁 442,188</span>
+                  <span>⚡ 369.6 VPH</span>
+                  <span style="color:#ffcc00">🔥 3.2x avg</span>
+                </div>
+              </div>
+            </div>
+            <div class="card outlier-card">
+              <a href="https://youtube.com/watch?v=TJd2q_JlaBA" target="_blank">
+                <div class="thumb-wrap">
+                  <img src="https://i.ytimg.com/vi/TJd2q_JlaBA/maxresdefault.jpg" alt="Every Marvel & DC Copycat's EXPLAINED In Detail" onerror="this.style.display='none'">
+                  <span class="mult-badge" style="background:#ff4444">13.5x</span>
+                  <span class="dur-badge">14:56</span>
+                </div>
+              </a>
+              <div class="card-body">
+                <div class="channel-tag">Stickvengers</div>
+                <div class="card-title">Every Marvel & DC Copycat's EXPLAINED In Detail</div>
+                <div class="card-stats">
+                  <span>👁 840,565</span>
+                  <span>⚡ 1047.68 VPH</span>
+                  <span style="color:#ff4444">🔥 13.5x avg</span>
+                </div>
+              </div>
+            </div>
+            <div class="card outlier-card">
+              <a href="https://youtube.com/watch?v=EMeVwYkxv6Q" target="_blank">
+                <div class="thumb-wrap">
+                  <img src="https://i.ytimg.com/vi/EMeVwYkxv6Q/maxresdefault.jpg" alt="All Family Trees in Marvel EXPLAINED In Detail" onerror="this.style.display='none'">
+                  <span class="mult-badge" style="background:#ffcc00">3.1x</span>
+                  <span class="dur-badge">30:22</span>
+                </div>
+              </a>
+              <div class="card-body">
+                <div class="channel-tag">Stickvengers</div>
+                <div class="card-title">All Family Trees in Marvel EXPLAINED In Detail</div>
+                <div class="card-stats">
+                  <span>👁 11,676</span>
+                  <span>⚡ 236.78 VPH</span>
+                  <span style="color:#ffcc00">🔥 3.1x avg</span>
+                </div>
+              </div>
+            </div>
+            <div class="card outlier-card">
+              <a href="https://youtube.com/watch?v=tFsu4hNyBM8" target="_blank">
+                <div class="thumb-wrap">
+                  <img src="https://i.ytimg.com/vi/tFsu4hNyBM8/maxresdefault.jpg" alt="The Boys Season 5 Already Broke The Boys’ First Big Plan" onerror="this.style.display='none'">
+                  <span class="mult-badge" style="background:#ffcc00">3.6x</span>
+                  <span class="dur-badge">11:22</span>
+                </div>
+              </a>
+              <div class="card-body">
+                <div class="channel-tag">Screen Rant</div>
+                <div class="card-title">The Boys Season 5 Already Broke The Boys’ First Big Plan</div>
+                <div class="card-stats">
+                  <span>👁 25,287</span>
+                  <span>⚡ 187.99 VPH</span>
+                  <span style="color:#ffcc00">🔥 3.6x avg</span>
+                </div>
+              </div>
+            </div>
+            <div class="card outlier-card">
+              <a href="https://youtube.com/watch?v=xnCKXTTSl_0" target="_blank">
+                <div class="thumb-wrap">
+                  <img src="https://i.ytimg.com/vi/xnCKXTTSl_0/maxresdefault.jpg" alt="The Punisher: One Last Kill May Be Frank Castle’s Final Mission" onerror="this.style.display='none'">
+                  <span class="mult-badge" style="background:#ffcc00">3.4x</span>
+                  <span class="dur-badge">11:13</span>
+                </div>
+              </a>
+              <div class="card-body">
+                <div class="channel-tag">Screen Rant</div>
+                <div class="card-title">The Punisher: One Last Kill May Be Frank Castle’s Final Mission</div>
+                <div class="card-stats">
+                  <span>👁 2,831</span>
+                  <span>⚡ 179.18 VPH</span>
+                  <span style="color:#ffcc00">🔥 3.4x avg</span>
+                </div>
+              </div>
+            </div>
+            <div class="card outlier-card">
+              <a href="https://youtube.com/watch?v=WnPOOPGC_7c" target="_blank">
+                <div class="thumb-wrap">
+                  <img src="https://i.ytimg.com/vi/WnPOOPGC_7c/maxresdefault.jpg" alt="A24’s Backrooms Movie Could Change Horror Forever" onerror="this.style.display='none'">
+                  <span class="mult-badge" style="background:#ffcc00">3.3x</span>
+                  <span class="dur-badge">8:26</span>
+                </div>
+              </a>
+              <div class="card-body">
+                <div class="channel-tag">Screen Rant</div>
+                <div class="card-title">A24’s Backrooms Movie Could Change Horror Forever</div>
+                <div class="card-stats">
+                  <span>👁 32,075</span>
+                  <span>⚡ 174.5 VPH</span>
+                  <span style="color:#ffcc00">🔥 3.3x avg</span>
+                </div>
+              </div>
+            </div>
+            <div class="card outlier-card">
+              <a href="https://youtube.com/watch?v=HiFxXkTIbH8" target="_blank">
+                <div class="thumb-wrap">
+                  <img src="https://i.ytimg.com/vi/HiFxXkTIbH8/maxresdefault.jpg" alt="The Batman 2: Pattinson's Update Just Made The Wait Worth It" onerror="this.style.display='none'">
+                  <span class="mult-badge" style="background:#ffcc00">3.0x</span>
+                  <span class="dur-badge">8:45</span>
+                </div>
+              </a>
+              <div class="card-body">
+                <div class="channel-tag">Screen Rant</div>
+                <div class="card-title">The Batman 2: Pattinson's Update Just Made The Wait Worth It</div>
+                <div class="card-stats">
+                  <span>👁 17,322</span>
+                  <span>⚡ 154.92 VPH</span>
+                  <span style="color:#ffcc00">🔥 3.0x avg</span>
+                </div>
+              </div>
+            </div></div>
+</div>
+
+<div class="section">
+  <div class="section-title">📡 Competitor Overview</div>
+  <div class="comp-table">
+        <div class="comp-row">
+          <div class="comp-name">The Cosmic Wonder</div>
+          <div class="comp-stat">50 videos</div>
+          <div class="comp-stat">avg 191.7 VPH</div>
+          <div class="comp-stat outlier-count">4 outliers 🔥</div>
+        </div>
+        <div class="comp-row">
+          <div class="comp-name">DoomBlazer</div>
+          <div class="comp-stat">3 videos</div>
+          <div class="comp-stat">avg 60.6 VPH</div>
+          <div class="comp-stat outlier-count">0 outliers 🔥</div>
+        </div>
+        <div class="comp-row">
+          <div class="comp-name">The Canadian Lad</div>
+          <div class="comp-stat">49 videos</div>
+          <div class="comp-stat">avg 114.2 VPH</div>
+          <div class="comp-stat outlier-count">2 outliers 🔥</div>
+        </div>
+        <div class="comp-row">
+          <div class="comp-name">Stickvengers</div>
+          <div class="comp-stat">50 videos</div>
+          <div class="comp-stat">avg 77.5 VPH</div>
+          <div class="comp-stat outlier-count">2 outliers 🔥</div>
+        </div>
+        <div class="comp-row">
+          <div class="comp-name">Screen Rant</div>
+          <div class="comp-stat">22 videos</div>
+          <div class="comp-stat">avg 52.2 VPH</div>
+          <div class="comp-stat outlier-count">4 outliers 🔥</div>
+        </div></div>
+</div>
+
+<div class="section">
+  <div class="section-title">📐 Proven Title Formats</div>
+  <div class="patterns-grid">
+        <div class="pattern-card">
+          <div class="pattern-name">Bold Statement / Observation <span class="pattern-count">149 videos</span></div>
+          <ul class="pattern-examples"><li>Avengers Doomsday Cinemacon, Spider-Man Brand New Day Daredevil Hints & More!</li><li>DAREDEVIL Born Again Season 2 EPISODE 5 BREAKDOWN! BULLSEYE 7 DAREDEVIL TEAMUP NOW?!</li><li>SPIDER-MAN BRAND NEW DAY CINEMACON FOOTAGE BREAKDOWN & NEW LEAK!</li></ul>
+        </div>
+        <div class="pattern-card">
+          <div class="pattern-name">Hidden/Secret/Nobody Knew [X] <span class="pattern-count">9 videos</span></div>
+          <ul class="pattern-examples"><li>Avengers Doomsday New Details, Secret Wars Cast, Spider-Man News & More!</li><li>Avengers Doomsday & Secret Wars New Reports! Daredevil & Spider-Man Theories and More!</li><li>AVENGERS DOOMSDAY ENDING CONFIRMED?! The MAIN CHARACTERS of Secret Wars REVEALED!</li></ul>
+        </div>
+        <div class="pattern-card">
+          <div class="pattern-name">Why [X] Is/Was/Did [Y] <span class="pattern-count">8 videos</span></div>
+          <ul class="pattern-examples"><li>WHY MARVEL CHANGED THE ORIGINAL AVENGERS SECRET WARS STORY!</li><li>Avengers Doomsday RELEASE DATE CHANGE Report! WHY This Would be AMAZING!</li><li>SADIE SINK is Totally JEAN GREY in Spider-man Brand New Day! And Here is WHY!</li></ul>
+        </div>
+        <div class="pattern-card">
+          <div class="pattern-name">Dark/Sad/Tragic Side of [X] <span class="pattern-count">2 videos</span></div>
+          <ul class="pattern-examples"><li>AVENGERS DOOMSDAY NEW SYNOPSIS! X-MEN DIE?! DARKEST MARVEL MOVIE EVER?!</li><li>Every SAD Sacrifice in Marvel EXPLAINED in Detail</li></ul>
+        </div>
+        <div class="pattern-card">
+          <div class="pattern-name">[X] vs [Y] / Comparison <span class="pattern-count">2 videos</span></div>
+          <ul class="pattern-examples"><li>New DOOM VS REED RICHARDS Avengers Doomsday Details! SCARLET WITCH Returning & Visionquest Reveals!</li><li>Playing The Invincible VS Beta</li></ul>
+        </div>
+        <div class="pattern-card">
+          <div class="pattern-name">[Number] + Topic List <span class="pattern-count">2 videos</span></div>
+          <ul class="pattern-examples"><li>12 Events That Changed The MCU Forever EXPLAINED In Detail</li><li>6 Characters Who REPLACED The Infinity Stones EXPLAINED In Detail</li></ul>
+        </div>
+        <div class="pattern-card">
+          <div class="pattern-name">Question Hook (?) <span class="pattern-count">1 videos</span></div>
+          <ul class="pattern-examples"><li>SPIDER-MAN Brand New Day 2 DIFFERENT ENDINGS REVEALED! Which is Better?</li></ul>
+        </div>
+        <div class="pattern-card">
+          <div class="pattern-name">The Real Reason [X] <span class="pattern-count">1 videos</span></div>
+          <ul class="pattern-examples"><li>The Real Reason The MCU Is Stuck In The Past or Is Tony Stark Holding Back Humanity?</li></ul>
+        </div></div>
+</div>
+
+<div class="section">
+  <div class="section-title">🎬 Script Hook Styles (from transcripts)</div>
+  <div><p style="color:#666">Transcript data unavailable.</p></div>
+</div>
+
+<div class="section">
+  <div class="section-title">🖼️ Thumbnail Patterns (Top Performing Videos)</div>
+  <div class="thumb-grid">
+            <div class="thumb-item">
+              <img src="https://i.ytimg.com/vi/Ytu3BNDrivE/maxresdefault.jpg" alt="I Watched Squid Game 2 in 0.25x Speed and Here's What I Found" onerror="this.style.display='none'">
+              <div class="thumb-caption">I Watched Squid Game 2 in 0.25x Speed and Here's What I Foun…</div>
+            </div>
+            <div class="thumb-item">
+              <img src="https://i.ytimg.com/vi/BVeg1iPBhPE/maxresdefault.jpg" alt="I Watched Interstellar in 0.25x Speed and Here's What I Found" onerror="this.style.display='none'">
+              <div class="thumb-caption">I Watched Interstellar in 0.25x Speed and Here's What I Foun…</div>
+            </div>
+            <div class="thumb-item">
+              <img src="https://i.ytimg.com/vi/zM07WpWWDqU/maxresdefault.jpg" alt="Thunderbolts* POST-CREDIT Scene BROKE Every MCU Rule" onerror="this.style.display='none'">
+              <div class="thumb-caption">Thunderbolts* POST-CREDIT Scene BROKE Every MCU Rule</div>
+            </div>
+            <div class="thumb-item">
+              <img src="https://i.ytimg.com/vi/2Ha8ejTOX3U/maxresdefault.jpg" alt="I Watched Spider-Man: Brand New Day Trailer in 0.25x Speed and Here's What I Found" onerror="this.style.display='none'">
+              <div class="thumb-caption">I Watched Spider-Man: Brand New Day Trailer in 0.25x Speed a…</div>
+            </div>
+            <div class="thumb-item">
+              <img src="https://i.ytimg.com/vi/UeTDB938DNE/maxresdefault.jpg" alt="I Watched Squid Game 2 in 0.25x Speed and Here's What I Found" onerror="this.style.display='none'">
+              <div class="thumb-caption">I Watched Squid Game 2 in 0.25x Speed and Here's What I Foun…</div>
+            </div>
+            <div class="thumb-item">
+              <img src="https://i.ytimg.com/vi/TJd2q_JlaBA/maxresdefault.jpg" alt="Every Marvel & DC Copycat's EXPLAINED In Detail" onerror="this.style.display='none'">
+              <div class="thumb-caption">Every Marvel & DC Copycat's EXPLAINED In Detail</div>
+            </div>
+            <div class="thumb-item">
+              <img src="https://i.ytimg.com/vi/amprODy8MdE/maxresdefault.jpg" alt="I Watched SUPERMAN Trailer in 0.25x Speed and Here's What I Found" onerror="this.style.display='none'">
+              <div class="thumb-caption">I Watched SUPERMAN Trailer in 0.25x Speed and Here's What I …</div>
+            </div>
+            <div class="thumb-item">
+              <img src="https://i.ytimg.com/vi/iTqB6fNYvp4/maxresdefault.jpg" alt="I Watched Sinners in 0.25x Speed and Here's What I Found" onerror="this.style.display='none'">
+              <div class="thumb-caption">I Watched Sinners in 0.25x Speed and Here's What I Found</div>
+            </div>
+            <div class="thumb-item">
+              <img src="https://i.ytimg.com/vi/PSQcPYRXCWg/maxresdefault.jpg" alt="I Watched Fantastic Four First Steps Trailer in 0.25x Speed and Here's What I Found" onerror="this.style.display='none'">
+              <div class="thumb-caption">I Watched Fantastic Four First Steps Trailer in 0.25x Speed …</div>
+            </div>
+            <div class="thumb-item">
+              <img src="https://i.ytimg.com/vi/IjqlgGme3LQ/maxresdefault.jpg" alt="I Watched Avengers: Doomsday X-MEN Trailer in 0.25x Speed and Here's What I Found" onerror="this.style.display='none'">
+              <div class="thumb-caption">I Watched Avengers: Doomsday X-MEN Trailer in 0.25x Speed an…</div>
+            </div>
+            <div class="thumb-item">
+              <img src="https://i.ytimg.com/vi/DZsz5tVCQBM/maxresdefault.jpg" alt="SPIDER-MAN: BRAND NEW DAY FIRST LOOK | A Generational Film" onerror="this.style.display='none'">
+              <div class="thumb-caption">SPIDER-MAN: BRAND NEW DAY FIRST LOOK | A Generational Film</div>
+            </div>
+            <div class="thumb-item">
+              <img src="https://i.ytimg.com/vi/wK8dleyTRuU/maxresdefault.jpg" alt="I Watched Avengers: Doomsday Trailer #1 in 0.25x Speed and Here's What I Found" onerror="this.style.display='none'">
+              <div class="thumb-caption">I Watched Avengers: Doomsday Trailer #1 in 0.25x Speed and H…</div>
+            </div></div>
+</div>
+
+<div class="section">
+  <div class="section-title">💡 Video Ideas for SpideyParker</div>
+  
+        <div class="idea-card">
+          <div class="idea-num">#1</div>
+          <div class="idea-title">"The Real Reason [Top Actor] Almost Quit Marvel — And Nobody Talks About It"</div>
+          <div class="idea-grid">
+            <div class="idea-section">
+              <div class="idea-label">💡 Why It Works</div>
+              <div class="idea-text">Hidden/real-reason format is the #1 outlier driver in MCU niche. Your audience wants insider truth, not press-release stories. Pairs perfectly with your celebrity angle.</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">🖼️ Thumbnail Concept</div>
+              <div class="idea-text">Actor face extreme close-up, shocked or uncomfortable expression. Bold red 'REAL REASON' text, dark vignette bg. High contrast — no clutter.</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">🎬 Opening Hook</div>
+              <div class="idea-text idea-hook">"The official story is that [Actor] loved the role. But behind the scenes, there were three moments where they almost walked away for good."</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">📐 Format</div>
+              <div class="idea-text">Long-form, 9–13 min, investigative narrative. Build with timeline, quotes, and verified on-set reports.</div>
+            </div>
+          </div>
+        </div>
+        <div class="idea-card">
+          <div class="idea-num">#2</div>
+          <div class="idea-title">"[Actor]'s On-Set Behavior Was So Bad Marvel Quietly Fired Them"</div>
+          <div class="idea-grid">
+            <div class="idea-section">
+              <div class="idea-label">💡 Why It Works</div>
+              <div class="idea-text">Celebrity controversy within Marvel hits all your audience's triggers: MCU fandom + gossip. 'Quietly' creates intrigue. High comment volume = algorithm boost.</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">🖼️ Thumbnail Concept</div>
+              <div class="idea-text">Actor mid-scene, 'FIRED' stamped across image in red, clapperboard + Marvel logo in corner. Dark moody tone.</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">🎬 Opening Hook</div>
+              <div class="idea-text idea-hook">"Marvel has fired two people quietly in the last four years. One of them has never been reported — until now."</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">📐 Format</div>
+              <div class="idea-text">Medium-long, 8–11 min. Use 'leaked', 'sources say' framing. End on a cliffhanger theory.</div>
+            </div>
+          </div>
+        </div>
+        <div class="idea-card">
+          <div class="idea-num">#3</div>
+          <div class="idea-title">"The Scene Marvel Shot But Will Never Release — And Why"</div>
+          <div class="idea-grid">
+            <div class="idea-section">
+              <div class="idea-label">💡 Why It Works</div>
+              <div class="idea-text">Deleted/hidden content is evergreen search traffic. 'Will never release' raises the stakes beyond a normal deleted scene video.</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">🖼️ Thumbnail Concept</div>
+              <div class="idea-text">Blurred/censored movie still, bold red CLASSIFIED stamp, Marvel logo ghosted in background.</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">🎬 Opening Hook</div>
+              <div class="idea-text idea-hook">"This scene exists. It was fully filmed, fully edited, and then buried — and the reason they won't release it is uncomfortable."</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">📐 Format</div>
+              <div class="idea-text">Long-form, 10–14 min. Narrative structure: set up the scene → what it revealed → why it was cut.</div>
+            </div>
+          </div>
+        </div>
+        <div class="idea-card">
+          <div class="idea-num">#4</div>
+          <div class="idea-title">"What [Movie] Was Actually About (And Marvel Hoped You Wouldn't Notice)"</div>
+          <div class="idea-grid">
+            <div class="idea-section">
+              <div class="idea-label">💡 Why It Works</div>
+              <div class="idea-text">Subtext/meaning deep dives get massive watch time — audiences feel smart finishing them. 'Marvel hoped you wouldn't notice' adds a conspiratorial edge.</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">🖼️ Thumbnail Concept</div>
+              <div class="idea-text">Movie poster with 'HIDDEN MEANING' text overlay, magnifying glass icon, muted but bold palette.</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">🎬 Opening Hook</div>
+              <div class="idea-text idea-hook">"On the surface this is a superhero movie. But every major scene is about something else entirely — and once you see it, you can't unsee it."</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">📐 Format</div>
+              <div class="idea-text">Long-form essay, 11–16 min. Analysis format: scene breakdown → real-world theme → why it was made this way.</div>
+            </div>
+          </div>
+        </div>
+        <div class="idea-card">
+          <div class="idea-num">#5</div>
+          <div class="idea-title">"[Celebrity]'s Public Image vs. What Co-Stars Actually Say"</div>
+          <div class="idea-grid">
+            <div class="idea-section">
+              <div class="idea-label">💡 Why It Works</div>
+              <div class="idea-text">The contrast format (public vs. private) creates tension that keeps viewers watching. Co-star quotes are more credible than rumor — keeps it safe and still viral.</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">🖼️ Thumbnail Concept</div>
+              <div class="idea-text">Split image: polished PR photo left, candid or on-set photo right. 'VS.' in bold center. Contrasting warm/cold color grading.</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">🎬 Opening Hook</div>
+              <div class="idea-text idea-hook">"Everything you think you know about [Celebrity] comes from their publicist. Here's what people who actually worked with them say."</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">📐 Format</div>
+              <div class="idea-text">Medium, 8–12 min. Present quotes, interviews, behind-the-scenes accounts chronologically.</div>
+            </div>
+          </div>
+        </div>
+        <div class="idea-card">
+          <div class="idea-num">#6</div>
+          <div class="idea-title">"[Number] Marvel Decisions That Were Supposed to Be Different — And Why They Changed"</div>
+          <div class="idea-grid">
+            <div class="idea-section">
+              <div class="idea-label">💡 Why It Works</div>
+              <div class="idea-text">Production change videos get shared by hardcore fans AND casual viewers. List format = easy watch time. 'Why they changed' adds depth beyond a standard list.</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">🖼️ Thumbnail Concept</div>
+              <div class="idea-text">Collage of character/movie stills with X-marks on rejected versions, bold number in corner.</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">🎬 Opening Hook</div>
+              <div class="idea-text idea-hook">"The Marvel we got was plan B. In every single phase, the original plan would have changed everything."</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">📐 Format</div>
+              <div class="idea-text">Long-form list, 10–15 min. Each item: original plan → what changed → how it affected the story.</div>
+            </div>
+          </div>
+        </div>
+        <div class="idea-card">
+          <div class="idea-num">#7</div>
+          <div class="idea-title">"The Dark Side of [Fan-Favourite Character] Marvel Doesn't Want You To Think About"</div>
+          <div class="idea-grid">
+            <div class="idea-section">
+              <div class="idea-label">💡 Why It Works</div>
+              <div class="idea-text">Reframing beloved characters is one of the highest-CTR formats in fan content. Forces viewers to engage emotionally — they'll either agree or argue in comments.</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">🖼️ Thumbnail Concept</div>
+              <div class="idea-text">Fan-favourite character in shadow, half-lit dramatic lighting, 'DARK SIDE' in bold. Emotional, not gimmicky.</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">🎬 Opening Hook</div>
+              <div class="idea-text idea-hook">"We love [Character]. But if you look at what they actually do — not what they say — the picture gets uncomfortable fast."</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">📐 Format</div>
+              <div class="idea-text">Essay/argument style, 9–13 min. Structure: establish the love → introduce the evidence → reframe → final take.</div>
+            </div>
+          </div>
+        </div>
+        <div class="idea-card">
+          <div class="idea-num">#8</div>
+          <div class="idea-title">"Why [MCU Movie] Failed — And What Nobody Wants To Admit"</div>
+          <div class="idea-grid">
+            <div class="idea-section">
+              <div class="idea-label">💡 Why It Works</div>
+              <div class="idea-text">Critical takes on underperforming MCU entries drive enormous discussion. 'Nobody wants to admit' positions you as brave and honest, not just another critic.</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">🖼️ Thumbnail Concept</div>
+              <div class="idea-text">Movie logo/poster with cracked glass effect, downward arrow graphic, serious tone — not mocking.</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">🎬 Opening Hook</div>
+              <div class="idea-text idea-hook">"The reviews said it was fine. The box office disagreed. And the real reason it failed is something Marvel themselves have never acknowledged."</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">📐 Format</div>
+              <div class="idea-text">Long-form opinion/analysis, 10–14 min. Structure: surface-level explanations → dig deeper → the uncomfortable truth.</div>
+            </div>
+          </div>
+        </div>
+</div>
+
+<div class="footer">Generated 2026-04-16 · YT Hybrid Research System · 174 videos analyzed across 6 channels</div>
+</body>
+</html>
