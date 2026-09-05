@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nerd Drop Explains Research — 2026-09-05</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0f0f0f; color: #f1f1f1; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+
+  .header { background: linear-gradient(135deg, #1a1a1a, #0f0f0f); border-bottom: 2px solid #ff0000; padding: 28px 40px; display:flex; justify-content:space-between; align-items:center; }
+  .header-left h1 { font-size: 2rem; color: #fff; }
+  .header-left .niche { color: #aaa; margin-top: 4px; }
+  .header-right { text-align:right; }
+  .date-badge { background: #ff0000; padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }
+  .subs-badge { color: #aaa; margin-top: 6px; font-size: 0.9rem; }
+
+  .stats-bar { display:flex; gap:0; border-bottom: 1px solid #222; }
+  .stat-box { flex:1; padding: 20px 28px; border-right: 1px solid #222; }
+  .stat-box:last-child { border-right: none; }
+  .stat-num { font-size: 2rem; font-weight: 700; color: #ff0000; }
+  .stat-label { color: #888; font-size: 0.8rem; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+  .section { padding: 36px 40px; border-bottom: 1px solid #1a1a1a; }
+  .section-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 20px; display:flex; align-items:center; gap:10px; }
+  .section-title::after { content:''; flex:1; height:1px; background:#222; }
+
+  /* Outlier cards */
+  .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+  .card { background: #1a1a1a; border-radius: 10px; overflow:hidden; border: 1px solid #222; transition: border-color 0.2s; }
+  .card:hover { border-color: #ff0000; }
+  .thumb-wrap { position:relative; aspect-ratio:16/9; overflow:hidden; background:#111; }
+  .thumb-wrap img { width:100%; height:100%; object-fit:cover; }
+  .mult-badge { position:absolute; top:8px; left:8px; padding:3px 10px; border-radius:4px; font-weight:800; font-size:0.85rem; color:#000; }
+  .dur-badge { position:absolute; bottom:8px; right:8px; background:rgba(0,0,0,0.85); padding:2px 8px; border-radius:3px; font-size:0.8rem; }
+  .card-body { padding: 12px; }
+  .channel-tag { font-size:0.72rem; color:#ff0000; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:6px; }
+  .card-title { font-size:0.9rem; line-height:1.4; margin-bottom:10px; }
+  .card-stats { display:flex; gap:12px; font-size:0.8rem; color:#888; }
+
+  /* Competitors */
+  .comp-table { display:flex; flex-direction:column; gap:8px; }
+  .comp-row { display:grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap:12px; padding:12px 16px; background:#1a1a1a; border-radius:8px; align-items:center; }
+  .comp-name { font-weight:600; }
+  .comp-stat { color:#888; font-size:0.85rem; }
+  .outlier-count { color:#ff8800 !important; font-weight:600; }
+
+  /* Patterns */
+  .patterns-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:14px; }
+  .pattern-card { background:#1a1a1a; border-radius:8px; padding:16px; border-left:3px solid #ff0000; }
+  .pattern-name { font-weight:700; margin-bottom:10px; display:flex; justify-content:space-between; }
+  .pattern-count { color:#ff0000; font-size:0.85rem; }
+  .pattern-examples { padding-left:18px; color:#aaa; font-size:0.82rem; line-height:1.7; }
+
+  /* Thumbnails */
+  .thumb-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap:10px; }
+  .thumb-item { background:#1a1a1a; border-radius:6px; overflow:hidden; }
+  .thumb-item img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }
+  .thumb-caption { padding:6px 8px; font-size:0.72rem; color:#888; }
+
+  /* Hooks */
+  .hook-row { display:grid; grid-template-columns: 220px 1fr 50px; gap:12px; align-items:center; margin-bottom:10px; }
+  .hook-label { font-size:0.85rem; }
+  .hook-bar-wrap { background:#222; border-radius:4px; height:8px; }
+  .hook-bar { background: linear-gradient(90deg, #ff0000, #ff6600); border-radius:4px; height:8px; }
+  .hook-pct { color:#888; font-size:0.8rem; text-align:right; }
+
+  /* Ideas */
+  .idea-card { background:#1a1a1a; border-radius:10px; padding:22px; margin-bottom:14px; border: 1px solid #222; }
+  .idea-num { color:#ff0000; font-weight:800; font-size:0.8rem; letter-spacing:0.1em; margin-bottom:8px; }
+  .idea-title { font-size:1.1rem; font-weight:700; margin-bottom:16px; line-height:1.4; }
+  .idea-grid { display:grid; grid-template-columns: 1fr 1fr; gap:14px; }
+  .idea-section { background:#111; border-radius:6px; padding:12px; }
+  .idea-label { font-size:0.75rem; color:#888; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:6px; }
+  .idea-text { font-size:0.85rem; line-height:1.6; color:#ccc; }
+  .idea-hook { color:#ff8800; font-style:italic; }
+
+  .footer { padding:24px 40px; text-align:center; color:#444; font-size:0.8rem; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1>📊 Nerd Drop Explains</h1>
+    <div class="niche">Pop Culture Explainer / Deep Dives</div>
+  </div>
+  <div class="header-right">
+    <div class="date-badge">📅 2026-09-05</div>
+    <div class="subs-badge">4K subscribers</div>
+  </div>
+</div>
+
+<div class="stats-bar">
+  <div class="stat-box"><div class="stat-num">6</div><div class="stat-label">Competitors Tracked</div></div>
+  <div class="stat-box"><div class="stat-num">212</div><div class="stat-label">Videos Analyzed</div></div>
+  <div class="stat-box"><div class="stat-num">18</div><div class="stat-label">Outliers Detected (3x+)</div></div>
+  <div class="stat-box"><div class="stat-num">7</div><div class="stat-label">Title Patterns Found</div></div>
+  <div class="stat-box"><div class="stat-num">8</div><div class="stat-label">Video Ideas Generated</div></div>
+</div>
+
+<div class="section">
+  <div class="section-title">🔥 Competitor Outlier Videos</div>
+  <div class="cards-grid">
+            <div class="card outlier-card">
+              <a href="https://youtube.com/watch?v=xZzpNJsHz50" target="_blank">
+                <div class="thumb-wrap">
+                  <img src="https://i.ytimg.com/vi/xZzpNJsHz50/maxresdefault.jpg" alt="I Watched GTA 6: Gameplay in 0.25x Speed and Here's What I Found" onerror="this.style.display='none'">
+                  <span class="mult-badge" style="background:#ff4444">12.5x</span>
+                  <span class="dur-badge">14:09</span>
+                </div>
+              </a>
+              <div class="card-body">
+                <div class="channel-tag">The Canadian Lad</div>
+                <div class="card-title">I Watched GTA 6: Gameplay in 0.25x Speed and Here's What I Found</div>
+                <div class="card-stats">
+                  <span>👁 239,583</span>
+                  <span>⚡ 2339.73 VPH</span>
+                  <span style="color:#ff4444">🔥 12.5x avg</span>
+                </div>
+              </div>
+            </div>
+            <div class="card outlier-card">
+              <a href="https://youtube.com/watch?v=XvxFPD9sn28" target="_blank">
+                <div class="thumb-wrap">
+                  <img src="https://i.ytimg.com/vi/XvxFPD9sn28/maxresdefault.jpg" alt="I Watched Avengers: Doomsday Trailer 2 in 0.25x Speed and Here's What I Found" onerror="this.style.display='none'">
+                  <span class="mult-badge" style="background:#ff8800">6.7x</span>
+                  <span class="dur-badge">21:08</span>
+                </div>
+              </a>
+              <div class="card-body">
+                <div class="channel-tag">The Canadian Lad</div>
+                <div class="card-title">I Watched Avengers: Doomsday Trailer 2 in 0.25x Speed and Here's What I Found</div>
+                <div class="card-stats">
+                  <span>👁 622,666</span>
+                  <span>⚡ 1256.04 VPH</span>
+                  <span style="color:#ff8800">🔥 6.7x avg</span>
+                </div>
+              </div>
+            </div>
+            <div class="card outlier-card">
+              <a href="https://youtube.com/watch?v=diuFhyGzy3Q" target="_blank">
+                <div class="thumb-wrap">
+                  <img src="https://i.ytimg.com/vi/diuFhyGzy3Q/maxresdefault.jpg" alt="I Watched Avengers: Doomsday Trailer in 0.25x Speed and Here's What I Found" onerror="this.style.display='none'">
+                  <span class="mult-badge" style="background:#ff8800">5.5x</span>
+                  <span class="dur-badge">13:16</span>
+                </div>
+              </a>
+              <div class="card-body">
+                <div class="channel-tag">The Canadian Lad</div>
+                <div class="card-title">I Watched Avengers: Doomsday Trailer in 0.25x Speed and Here's What I Found</div>
+                <div class="card-stats">
+                  <span>👁 326,902</span>
+                  <span>⚡ 1022.35 VPH</span>
+                  <span style="color:#ff8800">🔥 5.5x avg</span>
+                </div>
+              </div>
+            </div>
+            <div class="card outlier-card">
+              <a href="https://youtube.com/watch?v=xJC8COiUQqE" target="_blank">
+                <div class="thumb-wrap">
+                  <img src="https://i.ytimg.com/vi/xJC8COiUQqE/maxresdefault.jpg" alt="I Watched Avengers: Doomsday Trailer in 0.25x Speed and Here's What I Found" onerror="this.style.display='none'">
+                  <span class="mult-badge" style="background:#ffcc00">3.4x</span>
+                  <span class="dur-badge">24:32</span>
+                </div>
+              </a>
+              <div class="card-body">
+                <div class="channel-tag">The Canadian Lad</div>
+                <div class="card-title">I Watched Avengers: Doomsday Trailer in 0.25x Speed and Here's What I Found</div>
+                <div class="card-stats">
+                  <span>👁 551,689</span>
+                  <span>⚡ 632.62 VPH</span>
+                  <span style="color:#ffcc00">🔥 3.4x avg</span>
+                </div>
+              </div>
+            </div>
+            <div class="card outlier-card">
+              <a href="https://youtube.com/watch?v=6OT6YhOKSU0" target="_blank">
+                <div class="thumb-wrap">
+                  <img src="https://i.ytimg.com/vi/6OT6YhOKSU0/maxresdefault.jpg" alt="Spider-Man: Brand New Day is the Greatest Spidey Film I Watched" onerror="this.style.display='none'">
+                  <span class="mult-badge" style="background:#ffcc00">3.1x</span>
+                  <span class="dur-badge">18:18</span>
+                </div>
+              </a>
+              <div class="card-body">
+                <div class="channel-tag">The Canadian Lad</div>
+                <div class="card-title">Spider-Man: Brand New Day is the Greatest Spidey Film I Watched</div>
+                <div class="card-stats">
+                  <span>👁 386,036</span>
+                  <span>⚡ 576.14 VPH</span>
+                  <span style="color:#ffcc00">🔥 3.1x avg</span>
+                </div>
+              </div>
+            </div>
+            <div class="card outlier-card">
+              <a href="https://youtube.com/watch?v=QnSNMTZzI2s" target="_blank">
+                <div class="thumb-wrap">
+                  <img src="https://i.ytimg.com/vi/QnSNMTZzI2s/maxresdefault.jpg" alt="20 Movies Destroyed By Their Plot Holes" onerror="this.style.display='none'">
+                  <span class="mult-badge" style="background:#ffcc00">4.5x</span>
+                  <span class="dur-badge">26:48</span>
+                </div>
+              </a>
+              <div class="card-body">
+                <div class="channel-tag">WhatCulture</div>
+                <div class="card-title">20 Movies Destroyed By Their Plot Holes</div>
+                <div class="card-stats">
+                  <span>👁 126,806</span>
+                  <span>⚡ 1439.98 VPH</span>
+                  <span style="color:#ffcc00">🔥 4.5x avg</span>
+                </div>
+              </div>
+            </div>
+            <div class="card outlier-card">
+              <a href="https://youtube.com/watch?v=h7RbxH1FWwU" target="_blank">
+                <div class="thumb-wrap">
+                  <img src="https://i.ytimg.com/vi/h7RbxH1FWwU/maxresdefault.jpg" alt="20 Most Underrated Actors Working Today" onerror="this.style.display='none'">
+                  <span class="mult-badge" style="background:#ffcc00">3.9x</span>
+                  <span class="dur-badge">24:37</span>
+                </div>
+              </a>
+              <div class="card-body">
+                <div class="channel-tag">WhatCulture</div>
+                <div class="card-title">20 Most Underrated Actors Working Today</div>
+                <div class="card-stats">
+                  <span>👁 19,979</span>
+                  <span>⚡ 1244.2 VPH</span>
+                  <span style="color:#ffcc00">🔥 3.9x avg</span>
+                </div>
+              </div>
+            </div>
+            <div class="card outlier-card">
+              <a href="https://youtube.com/watch?v=wLJUPpUEG1Y" target="_blank">
+                <div class="thumb-wrap">
+                  <img src="https://i.ytimg.com/vi/wLJUPpUEG1Y/maxresdefault.jpg" alt="10 Most Disturbing Details Implied In Movies" onerror="this.style.display='none'">
+                  <span class="mult-badge" style="background:#ffcc00">3.2x</span>
+                  <span class="dur-badge">10:48</span>
+                </div>
+              </a>
+              <div class="card-body">
+                <div class="channel-tag">WhatCulture</div>
+                <div class="card-title">10 Most Disturbing Details Implied In Movies</div>
+                <div class="card-stats">
+                  <span>👁 40,869</span>
+                  <span>⚡ 1020.25 VPH</span>
+                  <span style="color:#ffcc00">🔥 3.2x avg</span>
+                </div>
+              </div>
+            </div>
+            <div class="card outlier-card">
+              <a href="https://youtube.com/watch?v=sKsYx6nl8VQ" target="_blank">
+                <div class="thumb-wrap">
+                  <img src="https://i.ytimg.com/vi/sKsYx6nl8VQ/maxresdefault.jpg" alt="10 Actors Who Knew The Movie Was Doomed On Day 1" onerror="this.style.display='none'">
+                  <span class="mult-badge" style="background:#ffcc00">3.2x</span>
+                  <span class="dur-badge">10:41</span>
+                </div>
+              </a>
+              <div class="card-body">
+                <div class="channel-tag">WhatCulture</div>
+                <div class="card-title">10 Actors Who Knew The Movie Was Doomed On Day 1</div>
+                <div class="card-stats">
+                  <span>👁 65,782</span>
+                  <span>⚡ 1026.89 VPH</span>
+                  <span style="color:#ffcc00">🔥 3.2x avg</span>
+                </div>
+              </div>
+            </div>
+            <div class="card outlier-card">
+              <a href="https://youtube.com/watch?v=DMqDR6oHBRA" target="_blank">
+                <div class="thumb-wrap">
+                  <img src="https://i.ytimg.com/vi/DMqDR6oHBRA/maxresdefault.jpg" alt="Movie Moments You've Always Misunderstood" onerror="this.style.display='none'">
+                  <span class="mult-badge" style="background:#ffcc00">3.1x</span>
+                  <span class="dur-badge">11:13</span>
+                </div>
+              </a>
+              <div class="card-body">
+                <div class="channel-tag">WhatCulture</div>
+                <div class="card-title">Movie Moments You've Always Misunderstood</div>
+                <div class="card-stats">
+                  <span>👁 166,694</span>
+                  <span>⚡ 1003.78 VPH</span>
+                  <span style="color:#ffcc00">🔥 3.1x avg</span>
+                </div>
+              </div>
+            </div>
+            <div class="card outlier-card">
+              <a href="https://youtube.com/watch?v=w2W5RPsEfv4" target="_blank">
+                <div class="thumb-wrap">
+                  <img src="https://i.ytimg.com/vi/w2W5RPsEfv4/maxresdefault.jpg" alt="The Flintstones: Ryan Gosling May Be Bedrock’s Best Chance" onerror="this.style.display='none'">
+                  <span class="mult-badge" style="background:#ff8800">5.5x</span>
+                  <span class="dur-badge">9:16</span>
+                </div>
+              </a>
+              <div class="card-body">
+                <div class="channel-tag">Screen Rant</div>
+                <div class="card-title">The Flintstones: Ryan Gosling May Be Bedrock’s Best Chance</div>
+                <div class="card-stats">
+                  <span>👁 10,822</span>
+                  <span>⚡ 673.57 VPH</span>
+                  <span style="color:#ff8800">🔥 5.5x avg</span>
+                </div>
+              </div>
+            </div>
+            <div class="card outlier-card">
+              <a href="https://youtube.com/watch?v=CJ8goNntrrQ" target="_blank">
+                <div class="thumb-wrap">
+                  <img src="https://i.ytimg.com/vi/CJ8goNntrrQ/maxresdefault.jpg" alt="The Batman Part II: Poison Ivy Could Fix 3 Big Problems" onerror="this.style.display='none'">
+                  <span class="mult-badge" style="background:#ffcc00">3.7x</span>
+                  <span class="dur-badge">9:56</span>
+                </div>
+              </a>
+              <div class="card-body">
+                <div class="channel-tag">Screen Rant</div>
+                <div class="card-title">The Batman Part II: Poison Ivy Could Fix 3 Big Problems</div>
+                <div class="card-stats">
+                  <span>👁 29,270</span>
+                  <span>⚡ 456.89 VPH</span>
+                  <span style="color:#ffcc00">🔥 3.7x avg</span>
+                </div>
+              </div>
+            </div>
+            <div class="card outlier-card">
+              <a href="https://youtube.com/watch?v=j2zNNhWHg2o" target="_blank">
+                <div class="thumb-wrap">
+                  <img src="https://i.ytimg.com/vi/j2zNNhWHg2o/maxresdefault.jpg" alt="What Actually KILLED The Celestial That Became Knowwhere" onerror="this.style.display='none'">
+                  <span class="mult-badge" style="background:#ff4444">22.9x</span>
+                  <span class="dur-badge">11:52</span>
+                </div>
+              </a>
+              <div class="card-body">
+                <div class="channel-tag">Stickvengers</div>
+                <div class="card-title">What Actually KILLED The Celestial That Became Knowwhere</div>
+                <div class="card-stats">
+                  <span>👁 305,337</span>
+                  <span>⚡ 1154.11 VPH</span>
+                  <span style="color:#ff4444">🔥 22.9x avg</span>
+                </div>
+              </div>
+            </div>
+            <div class="card outlier-card">
+              <a href="https://youtube.com/watch?v=K1VAlbIj87w" target="_blank">
+                <div class="thumb-wrap">
+                  <img src="https://i.ytimg.com/vi/K1VAlbIj87w/maxresdefault.jpg" alt="WHY Was Wolverine Crucified EXPLAINED" onerror="this.style.display='none'">
+                  <span class="mult-badge" style="background:#ff8800">5.1x</span>
+                  <span class="dur-badge">12:50</span>
+                </div>
+              </a>
+              <div class="card-body">
+                <div class="channel-tag">Stickvengers</div>
+                <div class="card-title">WHY Was Wolverine Crucified EXPLAINED</div>
+                <div class="card-stats">
+                  <span>👁 43,250</span>
+                  <span>⚡ 256.58 VPH</span>
+                  <span style="color:#ff8800">🔥 5.1x avg</span>
+                </div>
+              </div>
+            </div>
+            <div class="card outlier-card">
+              <a href="https://youtube.com/watch?v=_BR2umD3OPQ" target="_blank">
+                <div class="thumb-wrap">
+                  <img src="https://i.ytimg.com/vi/_BR2umD3OPQ/maxresdefault.jpg" alt="Where Every Avenger Is BEFORE Doomsday Explained In Detail" onerror="this.style.display='none'">
+                  <span class="mult-badge" style="background:#ffcc00">3.1x</span>
+                  <span class="dur-badge">18:56</span>
+                </div>
+              </a>
+              <div class="card-body">
+                <div class="channel-tag">Stickvengers</div>
+                <div class="card-title">Where Every Avenger Is BEFORE Doomsday Explained In Detail</div>
+                <div class="card-stats">
+                  <span>👁 352,305</span>
+                  <span>⚡ 157.49 VPH</span>
+                  <span style="color:#ffcc00">🔥 3.1x avg</span>
+                </div>
+              </div>
+            </div>
+            <div class="card outlier-card">
+              <a href="https://youtube.com/watch?v=Ygx_JQPTyCQ" target="_blank">
+                <div class="thumb-wrap">
+                  <img src="https://i.ytimg.com/vi/Ygx_JQPTyCQ/maxresdefault.jpg" alt="AVENGERS AGE OF ULTRON (2015) BREAKDOWN | 100 Details We Missed | Doomsday Rewatch" onerror="this.style.display='none'">
+                  <span class="mult-badge" style="background:#ff8800">8.3x</span>
+                  <span class="dur-badge">51:36</span>
+                </div>
+              </a>
+              <div class="card-body">
+                <div class="channel-tag">New Rockstars</div>
+                <div class="card-title">AVENGERS AGE OF ULTRON (2015) BREAKDOWN | 100 Details We Missed | Doomsday Rewatch</div>
+                <div class="card-stats">
+                  <span>👁 420,590</span>
+                  <span>⚡ 22249.55 VPH</span>
+                  <span style="color:#ff8800">🔥 8.3x avg</span>
+                </div>
+              </div>
+            </div>
+            <div class="card outlier-card">
+              <a href="https://youtube.com/watch?v=K5Vgktgb7tI" target="_blank">
+                <div class="thumb-wrap">
+                  <img src="https://i.ytimg.com/vi/K5Vgktgb7tI/maxresdefault.jpg" alt="AVENGERS DOOMSDAY Directors Reveal HUGE Plot Details!" onerror="this.style.display='none'">
+                  <span class="mult-badge" style="background:#ff8800">5.4x</span>
+                  <span class="dur-badge">17:42</span>
+                </div>
+              </a>
+              <div class="card-body">
+                <div class="channel-tag">New Rockstars</div>
+                <div class="card-title">AVENGERS DOOMSDAY Directors Reveal HUGE Plot Details!</div>
+                <div class="card-stats">
+                  <span>👁 553,214</span>
+                  <span>⚡ 14514.67 VPH</span>
+                  <span style="color:#ff8800">🔥 5.4x avg</span>
+                </div>
+              </div>
+            </div>
+            <div class="card outlier-card">
+              <a href="https://youtube.com/watch?v=SmQHBxTyDao" target="_blank">
+                <div class="thumb-wrap">
+                  <img src="https://i.ytimg.com/vi/SmQHBxTyDao/maxresdefault.jpg" alt="No One’s Talking About This from the Avengers Doomsday Trailer And It’s Driving Me Insane" onerror="this.style.display='none'">
+                  <span class="mult-badge" style="background:#ffcc00">3.8x</span>
+                  <span class="dur-badge">15:05</span>
+                </div>
+              </a>
+              <div class="card-body">
+                <div class="channel-tag">New Rockstars</div>
+                <div class="card-title">No One’s Talking About This from the Avengers Doomsday Trailer And It’s Driving Me Insane</div>
+                <div class="card-stats">
+                  <span>👁 876,281</span>
+                  <span>⚡ 10284.72 VPH</span>
+                  <span style="color:#ffcc00">🔥 3.8x avg</span>
+                </div>
+              </div>
+            </div></div>
+</div>
+
+<div class="section">
+  <div class="section-title">📡 Competitor Overview</div>
+  <div class="comp-table">
+        <div class="comp-row">
+          <div class="comp-name">The Canadian Lad</div>
+          <div class="comp-stat">50 videos</div>
+          <div class="comp-stat">avg 187.6 VPH</div>
+          <div class="comp-stat outlier-count">5 outliers 🔥</div>
+        </div>
+        <div class="comp-row">
+          <div class="comp-name">WhatCulture</div>
+          <div class="comp-stat">48 videos</div>
+          <div class="comp-stat">avg 320.7 VPH</div>
+          <div class="comp-stat outlier-count">5 outliers 🔥</div>
+        </div>
+        <div class="comp-row">
+          <div class="comp-name">Screen Rant</div>
+          <div class="comp-stat">22 videos</div>
+          <div class="comp-stat">avg 122.0 VPH</div>
+          <div class="comp-stat outlier-count">2 outliers 🔥</div>
+        </div>
+        <div class="comp-row">
+          <div class="comp-name">Stickvengers</div>
+          <div class="comp-stat">50 videos</div>
+          <div class="comp-stat">avg 50.4 VPH</div>
+          <div class="comp-stat outlier-count">3 outliers 🔥</div>
+        </div>
+        <div class="comp-row">
+          <div class="comp-name">New Rockstars</div>
+          <div class="comp-stat">42 videos</div>
+          <div class="comp-stat">avg 2693.5 VPH</div>
+          <div class="comp-stat outlier-count">3 outliers 🔥</div>
+        </div></div>
+</div>
+
+<div class="section">
+  <div class="section-title">📐 Proven Title Formats</div>
+  <div class="patterns-grid">
+        <div class="pattern-card">
+          <div class="pattern-name">Bold Statement / Observation <span class="pattern-count">158 videos</span></div>
+          <ul class="pattern-examples"><li>I Watched GTA 6: Gameplay in 0.25x Speed and Here's What I Found</li><li>I Watched Avengers: Doomsday Trailer in 0.25x Speed and Here's What I Found</li><li>I Watched Avengers: Doomsday Trailer 2 in 0.25x Speed and Here's What I Found</li></ul>
+        </div>
+        <div class="pattern-card">
+          <div class="pattern-name">[Number] + Topic List <span class="pattern-count">25 videos</span></div>
+          <ul class="pattern-examples"><li>20 Most Underrated Actors Working Today</li><li>10 Most Disturbing Details Implied In Movies</li><li>10 Movies With Insane Casts You've Never Heard Of</li></ul>
+        </div>
+        <div class="pattern-card">
+          <div class="pattern-name">Why [X] Is/Was/Did [Y] <span class="pattern-count">9 videos</span></div>
+          <ul class="pattern-examples"><li>Movies That Were Weirdly Changed (& Nobody Knows Why)</li><li>Blade MCU Movie: Why Mahershala Ali Walked Away</li><li>WHY Peter Parker Deserved a Better Mentor Than Tony Stark</li></ul>
+        </div>
+        <div class="pattern-card">
+          <div class="pattern-name">Question Hook (?) <span class="pattern-count">9 videos</span></div>
+          <ul class="pattern-examples"><li>The Simpsons: Is It Finally Time to Plan the Ending?</li><li>Avengers Doomsday: Did Harbour Spoil Doom’s Face Reveal?</li><li>Spider-Man: Did Brand New Day Kill Superhero Fatigue?</li></ul>
+        </div>
+        <div class="pattern-card">
+          <div class="pattern-name">Hidden/Secret/Nobody Knew [X] <span class="pattern-count">6 videos</span></div>
+          <ul class="pattern-examples"><li>I Found a Secret Detail in Doctor Doom's Teaser - Avengers: Doomsday</li><li>AVENGERS DOOMSDAY FULL BREAKDOWN: Avengers Vs X-Men Secret Plot</li><li>Every Color in Marvel and It's SECRET Meaning EXPLAINED</li></ul>
+        </div>
+        <div class="pattern-card">
+          <div class="pattern-name">[X] vs [Y] / Comparison <span class="pattern-count">3 videos</span></div>
+          <ul class="pattern-examples"><li>Coyote vs. Acme's Win Matters Beyond Looney Tunes</li><li>Coyote vs. Acme: Looney Tunes Is Running Out of Chances</li><li>DOCTOR DOOM vs TVA in Doomsday Revealed! D23 Full Video</li></ul>
+        </div>
+        <div class="pattern-card">
+          <div class="pattern-name">[X] Actually/Really [Y] <span class="pattern-count">2 videos</span></div>
+          <ul class="pattern-examples"><li>"Important" Movies That Are Actually Terrible</li><li>What Actually KILLED The Celestial That Became Knowwhere</li></ul>
+        </div></div>
+</div>
+
+<div class="section">
+  <div class="section-title">🎬 Script Hook Styles (from transcripts)</div>
+  <div><p style="color:#666">Transcript data unavailable.</p></div>
+</div>
+
+<div class="section">
+  <div class="section-title">🖼️ Thumbnail Patterns (Top Performing Videos)</div>
+  <div class="thumb-grid">
+            <div class="thumb-item">
+              <img src="https://i.ytimg.com/vi/t2I_6p1TwfM/maxresdefault.jpg" alt="AVENGERS DOOMSDAY TRAILER BREAKDOWN! Easter Eggs & Details You Missed | D23 2026" onerror="this.style.display='none'">
+              <div class="thumb-caption">AVENGERS DOOMSDAY TRAILER BREAKDOWN! Easter Eggs & Details Y…</div>
+            </div>
+            <div class="thumb-item">
+              <img src="https://i.ytimg.com/vi/2Ha8ejTOX3U/maxresdefault.jpg" alt="I Watched Spider-Man: Brand New Day Trailer in 0.25x Speed and Here's What I Found" onerror="this.style.display='none'">
+              <div class="thumb-caption">I Watched Spider-Man: Brand New Day Trailer in 0.25x Speed a…</div>
+            </div>
+            <div class="thumb-item">
+              <img src="https://i.ytimg.com/vi/zM07WpWWDqU/maxresdefault.jpg" alt="Thunderbolts* POST-CREDIT Scene BROKE Every MCU Rule" onerror="this.style.display='none'">
+              <div class="thumb-caption">Thunderbolts* POST-CREDIT Scene BROKE Every MCU Rule</div>
+            </div>
+            <div class="thumb-item">
+              <img src="https://i.ytimg.com/vi/SPQGT-Sgtyk/maxresdefault.jpg" alt="The HUGE DETAIL We Missed About Doctor Doom in the Avengers Doomsday Trailer!" onerror="this.style.display='none'">
+              <div class="thumb-caption">The HUGE DETAIL We Missed About Doctor Doom in the Avengers …</div>
+            </div>
+            <div class="thumb-item">
+              <img src="https://i.ytimg.com/vi/wzblJxPJM08/maxresdefault.jpg" alt="AVENGERS (2012) BREAKDOWN | 100 Details We Missed | Doomsday Rewatch" onerror="this.style.display='none'">
+              <div class="thumb-caption">AVENGERS (2012) BREAKDOWN | 100 Details We Missed | Doomsday…</div>
+            </div>
+            <div class="thumb-item">
+              <img src="https://i.ytimg.com/vi/TsFvYJ8fQh4/maxresdefault.jpg" alt="Let’s Finally Talk About the Avengers Doomsday (Reported) Opening Scene" onerror="this.style.display='none'">
+              <div class="thumb-caption">Let’s Finally Talk About the Avengers Doomsday (Reported) Op…</div>
+            </div>
+            <div class="thumb-item">
+              <img src="https://i.ytimg.com/vi/SmQHBxTyDao/maxresdefault.jpg" alt="No One’s Talking About This from the Avengers Doomsday Trailer And It’s Driving Me Insane" onerror="this.style.display='none'">
+              <div class="thumb-caption">No One’s Talking About This from the Avengers Doomsday Trail…</div>
+            </div>
+            <div class="thumb-item">
+              <img src="https://i.ytimg.com/vi/X5kVWgIPhrg/maxresdefault.jpg" alt="LANTERNS EPISODE 3 BREAKDOWN! 100+ Easter Eggs You Missed!" onerror="this.style.display='none'">
+              <div class="thumb-caption">LANTERNS EPISODE 3 BREAKDOWN! 100+ Easter Eggs You Missed!</div>
+            </div>
+            <div class="thumb-item">
+              <img src="https://i.ytimg.com/vi/CI-7BXeZq84/maxresdefault.jpg" alt="Doctor Doom’s Face in Avengers Doomsday Will Look DISGUSTING" onerror="this.style.display='none'">
+              <div class="thumb-caption">Doctor Doom’s Face in Avengers Doomsday Will Look DISGUSTING</div>
+            </div>
+            <div class="thumb-item">
+              <img src="https://i.ytimg.com/vi/-DV6ZTk-Prg/maxresdefault.jpg" alt="Did Jean Grey FIX THEIR MEMORIES in Spider-Man Brand New Day?" onerror="this.style.display='none'">
+              <div class="thumb-caption">Did Jean Grey FIX THEIR MEMORIES in Spider-Man Brand New Day…</div>
+            </div>
+            <div class="thumb-item">
+              <img src="https://i.ytimg.com/vi/kzI4R1DwXb0/maxresdefault.jpg" alt="VISIONQUEST TRAILER BREAKDOWN! Every Easter Egg & Detail You Missed!" onerror="this.style.display='none'">
+              <div class="thumb-caption">VISIONQUEST TRAILER BREAKDOWN! Every Easter Egg & Detail You…</div>
+            </div>
+            <div class="thumb-item">
+              <img src="https://i.ytimg.com/vi/B5h9in0QkoY/maxresdefault.jpg" alt="LANTERNS EPISODE 1 BREAKDOWN! Easter Eggs & Details You Missed!" onerror="this.style.display='none'">
+              <div class="thumb-caption">LANTERNS EPISODE 1 BREAKDOWN! Easter Eggs & Details You Miss…</div>
+            </div></div>
+</div>
+
+<div class="section">
+  <div class="section-title">💡 Video Ideas for Nerd Drop Explains</div>
+  
+        <div class="idea-card">
+          <div class="idea-num">#1</div>
+          <div class="idea-title">"The Complete [Character] Story — Every Detail You Need To Understand Them"</div>
+          <div class="idea-grid">
+            <div class="idea-section">
+              <div class="idea-label">💡 Why It Works</div>
+              <div class="idea-text">Full-character explainers are the backbone of the explainer niche. People search for these before watching a new season or after getting confused. Evergreen traffic.</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">🖼️ Thumbnail Concept</div>
+              <div class="idea-text">Character in iconic pose, 'EXPLAINED' text, timeline graphic behind them. Authoritative, not clickbaity.</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">🎬 Opening Hook</div>
+              <div class="idea-text idea-hook">"You've seen [Character] in [X] projects. But their actual story — origins, motivations, every arc — is more complex than any single video has covered. Let's fix that."</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">📐 Format</div>
+              <div class="idea-text">Long-form, 14–20 min. Chronological structure: origins → turning point → current arc → what's next. Cover comics/source material too.</div>
+            </div>
+          </div>
+        </div>
+        <div class="idea-card">
+          <div class="idea-num">#2</div>
+          <div class="idea-title">"Why [Plot Point Everyone Was Confused By] Actually Makes Perfect Sense"</div>
+          <div class="idea-grid">
+            <div class="idea-section">
+              <div class="idea-label">💡 Why It Works</div>
+              <div class="idea-text">Confusion-resolution videos have massive search volume. Your audience already has the question — you're giving them the answer they couldn't find. High completion rates.</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">🖼️ Thumbnail Concept</div>
+              <div class="idea-text">Confused-face emoji or character, '?' → '!' transformation graphic, clean explainer style.</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">🎬 Opening Hook</div>
+              <div class="idea-text idea-hook">"When [Plot Point] happened, half the audience checked out. The other half went to Reddit. Neither found a satisfying answer — but it's actually right there in the text."</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">📐 Format</div>
+              <div class="idea-text">Medium-long, 10–15 min. Start by validating the confusion, then build the explanation layer by layer.</div>
+            </div>
+          </div>
+        </div>
+        <div class="idea-card">
+          <div class="idea-num">#3</div>
+          <div class="idea-title">"The Real-World [Concept] Behind [Famous Franchise] — Explained"</div>
+          <div class="idea-grid">
+            <div class="idea-section">
+              <div class="idea-label">💡 Why It Works</div>
+              <div class="idea-text">Bridging pop culture to real-world concepts (science, history, psychology) doubles your audience: fans of the franchise AND people interested in the concept. Great for shares.</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">🖼️ Thumbnail Concept</div>
+              <div class="idea-text">Franchise imagery blended with real-world photo (e.g., actual science lab). 'REAL SCIENCE/HISTORY' text overlay.</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">🎬 Opening Hook</div>
+              <div class="idea-text idea-hook">"The writers of [Franchise] didn't make this up. They took a real [concept] and wrapped a story around it — and the real version is even more fascinating."</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">📐 Format</div>
+              <div class="idea-text">Long-form, 12–18 min. Structure: what the show shows → what's real → how accurately it's depicted → why that matters.</div>
+            </div>
+          </div>
+        </div>
+        <div class="idea-card">
+          <div class="idea-num">#4</div>
+          <div class="idea-title">"[Franchise] Timeline Explained — In The Correct Order"</div>
+          <div class="idea-grid">
+            <div class="idea-section">
+              <div class="idea-label">💡 Why It Works</div>
+              <div class="idea-text">Timeline explainers have permanent search value, especially for franchises with complicated chronology. People return to these repeatedly. One of the most-shared formats.</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">🖼️ Thumbnail Concept</div>
+              <div class="idea-text">Timeline graphic with key moments, franchise logo, 'FULL TIMELINE' text. Clean, organized visual.</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">🎬 Opening Hook</div>
+              <div class="idea-text idea-hook">"Watching [Franchise] in release order gives you one experience. Watching it in chronological order gives you a completely different story — and honestly, a better one."</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">📐 Format</div>
+              <div class="idea-text">Very long-form, 18–25 min. Structured by time period, not release date. Include context for why each period matters.</div>
+            </div>
+          </div>
+        </div>
+        <div class="idea-card">
+          <div class="idea-num">#5</div>
+          <div class="idea-title">"The Philosophy of [Character] — What They Actually Believe And Why It Matters"</div>
+          <div class="idea-grid">
+            <div class="idea-section">
+              <div class="idea-label">💡 Why It Works</div>
+              <div class="idea-text">Philosophy/ideology breakdowns perform exceptionally well with your deep-dive audience. Elevates you above recap channels. Drives long comment discussions.</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">🖼️ Thumbnail Concept</div>
+              <div class="idea-text">Character thoughtful/serious expression, philosophical quote overlay, dark cinematic tone. Intellectual energy.</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">🎬 Opening Hook</div>
+              <div class="idea-text idea-hook">"[Character] isn't just a [hero/villain]. They have a coherent worldview — one that's internally consistent, backed by their history, and genuinely worth understanding."</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">📐 Format</div>
+              <div class="idea-text">Essay/analysis, 12–18 min. Extract their core beliefs from actions, not just dialogue. Compare to real philosophical frameworks.</div>
+            </div>
+          </div>
+        </div>
+        <div class="idea-card">
+          <div class="idea-num">#6</div>
+          <div class="idea-title">"Every Foreshadow In [Movie/Show] — All [X] Of Them, Explained"</div>
+          <div class="idea-grid">
+            <div class="idea-section">
+              <div class="idea-label">💡 Why It Works</div>
+              <div class="idea-text">Comprehensive foreshadow breakdowns are deeply satisfying and highly shareable. Positioned as 'all of them' makes it the definitive resource — hard for other creators to compete with.</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">🖼️ Thumbnail Concept</div>
+              <div class="idea-text">Key foreshadow scene with circle callout, 'ALL [X] FORESHADOWS' text, rewatch-bait energy.</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">🎬 Opening Hook</div>
+              <div class="idea-text idea-hook">"The writers hid the ending in the very first episode. Then they did it again. And again. This video finds every single one — and explains exactly what it was telling you."</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">📐 Format</div>
+              <div class="idea-text">Long-form, 14–22 min. Go in chronological order. For each foreshadow: show the moment → show the payoff → explain the craft decision.</div>
+            </div>
+          </div>
+        </div>
+        <div class="idea-card">
+          <div class="idea-num">#7</div>
+          <div class="idea-title">"The [Villain]'s Plan Explained — It Was Actually Brilliant"</div>
+          <div class="idea-grid">
+            <div class="idea-section">
+              <div class="idea-label">💡 Why It Works</div>
+              <div class="idea-text">Villain-logic breakdowns generate massive engagement because viewers love defending or attacking villain plans. 'Actually brilliant' is a contrarian hook that earns clicks.</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">🖼️ Thumbnail Concept</div>
+              <div class="idea-text">Villain mid-monologue or scheming, 'GENIUS PLAN' text, chess piece or strategy graphic overlay.</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">🎬 Opening Hook</div>
+              <div class="idea-text idea-hook">"Everyone says [Villain]'s plan had plot holes. They're wrong. Break it down step by step and it's one of the most internally consistent schemes in [franchise] history."</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">📐 Format</div>
+              <div class="idea-text">Analysis, 10–15 min. Walk through the plan phase by phase. Address every common criticism with specific textual evidence.</div>
+            </div>
+          </div>
+        </div>
+        <div class="idea-card">
+          <div class="idea-num">#8</div>
+          <div class="idea-title">"What [Franchise] Gets Right (And Wrong) About [Real Topic] — Expert Breakdown"</div>
+          <div class="idea-grid">
+            <div class="idea-section">
+              <div class="idea-label">💡 Why It Works</div>
+              <div class="idea-text">'Gets right and wrong' framing is balanced and intellectually honest, which your audience respects. Positions you as an authority. Can collaborate with actual experts for credibility.</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">🖼️ Thumbnail Concept</div>
+              <div class="idea-text">Franchise + real-world split visual, tick/cross graphic, 'FACT vs FICTION' or 'EXPERT BREAKDOWN' text.</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">🎬 Opening Hook</div>
+              <div class="idea-text idea-hook">"We asked [or: We looked at what] actual [experts/historians/scientists] think about how [Franchise] portrays [Topic]. The results are more interesting than you'd expect."</div>
+            </div>
+            <div class="idea-section">
+              <div class="idea-label">📐 Format</div>
+              <div class="idea-text">Long-form, 13–18 min. Structure: introduce claim → check it against reality → explain the gap → why the writers made that choice.</div>
+            </div>
+          </div>
+        </div>
+</div>
+
+<div class="footer">Generated 2026-09-05 · YT Hybrid Research System · 212 videos analyzed across 6 channels</div>
+</body>
+</html>
